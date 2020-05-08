@@ -4,6 +4,7 @@ import { Exclude, Expose, Transform } from 'class-transformer';
 import { ObjectId } from 'mongoose';
 import { AuthService } from '../../application/services/auth.service';
 import { UserRoles } from '../../API/types/userRoles';
+import { BadRequestException } from '@nestjs/common';
 
 export class DbUser {
   @Expose() name: string;
@@ -36,6 +37,11 @@ export class DbUser {
         .update(password)
         .digest('hex');
     return hashedPass === this.password;
+  }
+
+  public changeBalance(n: number) {
+    this.balance -= n;
+    if (this.balance < 0) throw new BadRequestException();
   }
 
   public async generateToken(authService: AuthService): Promise<void> {

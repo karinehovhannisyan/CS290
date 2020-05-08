@@ -1,6 +1,6 @@
-import {JwtService} from "@nestjs/jwt";
-import {Model} from "mongoose";
-import { Inject, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
 import { Configs } from '../../config/config';
 import { IJwtPayload } from '../interfaces/IJwtPayload';
 import { UserDocument } from '../../infrastructure/models/interfaces/userDocument';
@@ -17,10 +17,7 @@ export class AuthService {
     public async getToken(payload: IJwtPayload) {
         return this.jwtService.sign(payload);
     }
-
-    public async decodeToken(token: string): Promise<IJwtPayload> {
-        return await this.jwtService.decode(token) as IJwtPayload;
-    }
+    
     public async validateUser(payload: IJwtPayload, token: string): Promise<DbUser> {
         if (!token) {
             return null;
@@ -30,7 +27,7 @@ export class AuthService {
             if (!user || user.token !== token) {
                 return null;
             }
-            if (!this.ifOutdated(user.updatedAt)) {
+            if (!AuthService.ifOutdated(user.updatedAt)) {
                 await user.save();
             }
             return user._doc as DbUser;
@@ -38,7 +35,7 @@ export class AuthService {
         return null;
     }
 
-    private ifOutdated(date: Date): boolean {
+    private static ifOutdated(date: Date): boolean {
         return date && Date.now() - date.getTime() > Configs.tokenTimeout;
     }
 }

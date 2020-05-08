@@ -15,7 +15,7 @@ import { userProviders } from '../infrastructure/providers/user.providers';
         JwtModule.register({
             secretOrPrivateKey: Configs.privateKey,
             publicKey: Configs.publicKey,
-            signOptions: {expiresIn: Configs.jwtExpiresIn}
+            signOptions: {expiresIn: Configs.tokenTimeout}
         }),
 
     ],

@@ -18,7 +18,7 @@ export class Mapper {
 
   private static MapEach<T, G extends IDocument>(classInstance: ClassType<T>, source: G, deleteUndefined: boolean): T {
     const plainObject = classToPlain(source._doc || source);
-    const newClass = plainToClass(classInstance, plainObject, { excludeExtraneousValues: true });
+    const newClass = plainToClass(classInstance, plainObject, { excludeExtraneousValues: true});
     if (deleteUndefined)
       for (const prop in newClass) {
         if (newClass.hasOwnProperty(prop)) {

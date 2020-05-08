@@ -1,9 +1,7 @@
-import { Expose, Transform } from 'class-transformer';
-import { ObjectId } from 'mongoose';
+import { Expose } from 'class-transformer';
 
 export class UserDto {
-  @Transform(role => new String(role), {toClassOnly: true}) // TODO
-  @Expose() _id: string;
+  @Expose() _id;
   @Expose() name: string;
   @Expose() surname: string;
   @Expose() email: string;

@@ -12,7 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       passReqToCallback: true,
       secretOrKey: Configs.privateKey,
-      publicKey: Configs.publicKey
+      publicKey: Configs.publicKey,
     });
   }
 
