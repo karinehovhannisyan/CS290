@@ -6,6 +6,5 @@ export class UserEditDto {
   @ApiModelProperty() readonly password: string;
   @ApiModelProperty() readonly confirmPassword: string;
   @ApiModelProperty() readonly dob: Date;
-  @ApiModelProperty() readonly address: string;
   @ApiModelProperty() readonly phone: string;
 }

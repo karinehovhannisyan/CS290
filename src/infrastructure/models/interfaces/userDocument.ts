@@ -5,7 +5,6 @@ export interface UserDocument extends Document {
   email: string;
   token: string;
   dob: Date;
-  address: string;
   phone: string;
   balance: number;
 }

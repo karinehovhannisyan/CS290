@@ -1,20 +1,17 @@
 import * as crypto from 'crypto';
 import { Configs } from '../../config/config';
-import { Exclude, Expose, Transform } from 'class-transformer';
-import { ObjectId } from 'mongoose';
+import { Expose } from 'class-transformer';
 import { AuthService } from '../../application/services/auth.service';
 import { UserRoles } from '../../API/types/userRoles';
 import { BadRequestException } from '@nestjs/common';
 
 export class DbUser {
   @Expose() name: string;
-  // @Expose() _id: ObjectId;
   @Expose() surname: string;
   @Expose() email: string;
   @Expose() password: string;
   @Expose() token: string;
   @Expose() dob: Date;
-  @Expose() address: string;
   @Expose() phone: string;
   @Expose() balance: number;
   @Expose() role: UserRoles;

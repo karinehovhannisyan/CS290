@@ -17,7 +17,7 @@ export class AuthService {
     public async getToken(payload: IJwtPayload) {
         return this.jwtService.sign(payload);
     }
-    
+
     public async validateUser(payload: IJwtPayload, token: string): Promise<DbUser> {
         if (!token) {
             return null;

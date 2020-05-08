@@ -7,7 +7,6 @@ export const UserSchema = new mongoose.Schema({
   token: String,
   email: String,
   dob: Date,
-  address: String,
   phone: String,
   balance: { type: Number, default: 0 },
   updatedAt: Date,
