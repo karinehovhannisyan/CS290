@@ -4,7 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.enableCors();
   const options = new DocumentBuilder()
     .setTitle('CS290: Supermarket API')
     .setVersion('1.0')
@@ -15,4 +15,5 @@ async function bootstrap() {
 
   await app.listen(3000);
 }
+
 bootstrap();

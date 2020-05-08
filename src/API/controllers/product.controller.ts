@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -25,6 +26,7 @@ import * as crypto from 'crypto';
 import { Configs } from '../../config/config';
 import { ApiTags } from '@nestjs/swagger';
 import { PagedListHolder } from '../../application/extentions/pagedListHolder';
+import { FileUploadInterceptor } from '../interceptors/fileInterceptor';
 
 @Controller('products')
 @ApiTags('products')
@@ -48,7 +50,9 @@ export class ProductController {
     @Query('offset') offset: string,
     @Query('limit') limit: string,
   ): Promise<PagedListHolder<ProductDto>> {
-    return await this.productService.getProductsPagedAsync(new ObjectId(categoryId), q, parseInt(offset), parseInt(limit));
+    if (!! categoryId && !ObjectId.isValid(categoryId))
+      throw new BadRequestException();
+    return await this.productService.getProductsPagedAsync(categoryId ? new ObjectId(categoryId) : null, q, parseInt(offset), parseInt(limit));
   }
 
   @Get(':id')
@@ -73,24 +77,7 @@ export class ProductController {
   }
 
   @Put(':id/image')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: '/public/products',
-        filename: function(req, file, cb) {
-          const newName = crypto
-            .createHmac('sha256', Configs.imageSecret)
-            .update((new Date()).toDateString())
-            .digest('hex');
-          if (fs.existsSync(path.join('/public/products', file.originalname))) {
-            cb("Error");
-          } else {
-            cb(null, newName + file.originalname.split(".")[1]);
-          }
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileUploadInterceptor)
   @Roles(UserRoles.admin)
   //@UseGuards(AuthGuard('jwt'), RolesGuard)
   public async uploadPictureAsync(@Param('id') id: string, @UploadedFile() file): Promise<void> {

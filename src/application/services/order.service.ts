@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Model, ObjectId } from 'mongoose';
 import { Configs } from '../../config/config';
 import { Mapper } from '../extentions/mapper';
@@ -67,7 +67,7 @@ export class OrderService {
     }
   }
 
-  public async getByIdAsync(id: ObjectId): Promise<OrderDto> {
+  public async getByIdAsync(id: ObjectId, userId: ObjectId): Promise<OrderDto> {
     const order = await this.orderModel.findOne({ _id: id })
       .populate({
         path: 'orderItems',
@@ -75,16 +75,22 @@ export class OrderService {
       }).populate('user')
       .exec();
 
+    if (userId && order.user._id !== userId)
+      throw new ForbiddenException();
+
     if (!order)
       throw new NotFoundException();
 
     return Mapper.Map(OrderDto, order);
   }
 
-  public async getPagedAsync(q: string, offset: number, limit: number): Promise<PagedListHolder<OrderDto>> {
+  public async getPagedAsync(q: string, offset: number, limit: number, userId: ObjectId): Promise<PagedListHolder<OrderDto>> {
     const searchQuery: any = {};
     if (q) {
       searchQuery.address = { $regex: new RegExp(`.*${q}.*`, 'i') };
+    }
+    if (userId) {
+      searchQuery.user = userId;
     }
     const count = await this.orderModel.countDocuments(searchQuery).exec();
     const orders = await this.orderModel

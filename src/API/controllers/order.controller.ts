@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, Request } from '@nestjs/common';
 import { Roles } from '../validation/roles';
 import { UserRoles } from '../types/userRoles';
 import { OrderCreationDto } from '../../application/models/orderCreationDto';
@@ -7,7 +7,8 @@ import { OrderDto } from '../../application/models/orderDto';
 import { ApiTags } from '@nestjs/swagger';
 import { PagedListHolder } from '../../application/extentions/pagedListHolder';
 
-const ObjectId = require("mongoose").Types.ObjectId;
+const ObjectId = require('mongoose').Types.ObjectId;
+
 @Controller('orders')
 @ApiTags('orders')
 export class OrderController {
@@ -22,21 +23,22 @@ export class OrderController {
   }
 
   @Get()
-  @Roles(UserRoles.guest, UserRoles.user, UserRoles.admin)
+  @Roles(UserRoles.admin)
   //@UseGuards(RolesGuard)
   public async getOrdersPagedAsync(
     @Query('q') q: string,
     @Query('offset') offset,
     @Query('limit') limit,
+    @Request() req
   ): Promise<PagedListHolder<OrderDto>> {
-    return await this.orderService.getPagedAsync(q, parseInt(offset), parseInt(limit));
+    return await this.orderService.getPagedAsync(q, parseInt(offset), parseInt(limit), req.user && req.user.role === UserRoles.user ? req.user._id : null);
   }
 
   @Get(':id')
   @Roles(UserRoles.guest, UserRoles.user, UserRoles.admin)
   //@UseGuards(RolesGuard)
-  public async getByIdAsync(@Param('id') id: string): Promise<OrderDto> {
-    return await this.orderService.getByIdAsync(new ObjectId(id));
+  public async getByIdAsync(@Param('id') id: string, @Request() req): Promise<OrderDto> {
+    return await this.orderService.getByIdAsync(new ObjectId(id), req.user && req.user.role === UserRoles.user ? req.user._id : null);
   }
 
   @Delete(':id')

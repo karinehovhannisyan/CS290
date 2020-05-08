@@ -1,6 +1,5 @@
 import { Expose } from 'class-transformer';
 import { LevelType } from '../../domain/levelType';
-import { ObjectId } from 'mongoose';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 

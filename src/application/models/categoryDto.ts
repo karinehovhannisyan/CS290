@@ -1,7 +1,8 @@
 import { Expose } from 'class-transformer';
-import { LevelType } from '../../domain/levelType';
+import { ObjectId } from 'mongoose';
 
 export class CategoryDto {
+  @Expose() _id: ObjectId;
   @Expose() name: string;
   @Expose() parent: CategoryDto = null;
   @Expose() children: CategoryDto[];
