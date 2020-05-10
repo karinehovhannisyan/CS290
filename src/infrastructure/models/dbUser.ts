@@ -6,6 +6,7 @@ import { UserRoles } from '../../API/types/userRoles';
 import { BadRequestException } from '@nestjs/common';
 
 export class DbUser {
+  @Expose() _id;
   @Expose() name: string;
   @Expose() surname: string;
   @Expose() email: string;
