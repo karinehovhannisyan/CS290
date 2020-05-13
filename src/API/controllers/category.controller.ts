@@ -30,7 +30,7 @@ export class CategoryController {
     @Query('offset') offset,
     @Query('limit') limit,
   ): Promise<PagedListHolder<CategoryDto>> {
-    return await this.categoryService.getPagedAsync(q, parseInt(offset), parseInt(limit));
+    return await this.categoryService.  getPagedAsync(q, parseInt(offset), parseInt(limit));
   }
 
   @Get(':id')

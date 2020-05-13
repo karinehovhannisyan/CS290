@@ -46,7 +46,7 @@ export class ProductService {
       searchQuery.name = { $regex: new RegExp(`.*${q}.*`, "i") };
     }
     const count = await this.productModel.countDocuments(searchQuery).exec();
-    const products = await this.productModel.find(searchQuery).limit(limit).skip(offset).exec();
+    const products = await this.productModel.find(searchQuery).sort([['updatedAt', -1]]).limit(limit).skip(offset).exec();
 
     return new PagedListHolder(Mapper.MapList(ProductDto, products), limit, offset, count);
   }

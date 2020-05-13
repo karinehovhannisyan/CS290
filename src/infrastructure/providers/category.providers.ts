@@ -12,6 +12,10 @@ export const categoryProviders = [
         foreignField: 'parent',
         justOne: false,
       });
+      schema.pre('save', function (next) {
+        this.updatedAt = new Date();
+        next();
+      });
       return schema;
     },
   },

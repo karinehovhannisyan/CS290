@@ -88,7 +88,7 @@ export class CategoryService {
   }
 
   public async getPagedAsync(q: string, offset: number, limit: number): Promise<PagedListHolder<CategoryDto>> {
-    const searchQuery: any = {};
+    const searchQuery: any = {level: LevelType.parent};
     if (q) {
       searchQuery.name = { $regex: new RegExp(`.*${q}.*`, "i") };
     }
@@ -96,6 +96,7 @@ export class CategoryService {
     const categories = await this.categoryModel
       .find(searchQuery)
       .skip(offset)
+      .sort([['updatedAt', -1]])
       .limit(limit)
       .populate('children')
       .populate('parent')
@@ -104,11 +105,7 @@ export class CategoryService {
     const dtos: CategoryDto[] = [];
     categories.forEach(category => {
       const dto = Mapper.Map(CategoryDto, category);
-      if (category.level == LevelType.parent) {
-        dto.children = Mapper.MapList(CategoryDto, category.children);
-      } else {
-        dto.parent = Mapper.Map(CategoryDto, category.parent);
-      }
+      dto.children = Mapper.MapList(CategoryDto, category.children);
       dtos.push(dto);
     });
     return new PagedListHolder(dtos, limit, offset, count);

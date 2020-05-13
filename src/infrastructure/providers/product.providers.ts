@@ -9,6 +9,13 @@ export const productProviders = [
   },
   {
     name: Configs.providers.category,
-    useFactory: () => CategorySchema
+    useFactory: () => {
+      const schema = CategorySchema;
+      schema.pre('save', function(next) {
+        this.updatedAt = new Date();
+        next();
+      });
+      return schema;
+    }
   },
 ];
